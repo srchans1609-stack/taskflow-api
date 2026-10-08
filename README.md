@@ -1,12 +1,17 @@
-# TaskFlow API - Práctica 1.1
+# TaskFlow API — Práctica 1.1
 
-API RESTful inicial para la gestión de tareas desarrollada con FastAPI.
+API inicial para la gestión de tareas desarrollada con FastAPI.
 
-## Decisión de Arquitectura
-Se ha organizado el código en una estructura modular dentro del paquete `app/`:
-- `app/main.py`: Punto de entrada de la aplicación y configuración del servidor FastAPI.
+## Arquitectura del Proyecto
 
-## Instalación y Ejecución
+Se ha optado por una estructura modular organizada en el paquete app/:
 
-1. Clonar el repositorio y acceder a la carpeta:
-```
+- app/main.py: Punto de entrada de la aplicación y configuración del servidor FastAPI.
+(/health, /version, /ping).
+
+## Requisitos e Instalación
+
+1. **Clonar el repositorio**:
+   ```bash
+   git clone [https://github.com/srchans1609-stack/taskflow-api.git](https://github.com/srchans1609-stack/taskflow-api.git)
+   cd TaskFlow
