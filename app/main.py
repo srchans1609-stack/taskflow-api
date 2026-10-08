@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.router import router as api_router
+from pydantic import BaseModel, Field
 
 # Instancia principal de FastAPI
 app = FastAPI(
@@ -8,5 +8,50 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Incluir el enrutador modular por dominio
-app.include_router(api_router)
+
+# --- Modelos de Respuesta (Pydantic) ---
+class HealthResponse(BaseModel):
+    status: str = Field(..., example="ok")
+
+
+class VersionResponse(BaseModel):
+    version: str = Field(..., example="1.0.0")
+
+
+class PingResponse(BaseModel):
+    message: str = Field(..., example="pong")
+
+
+# --- Endpoints ---
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    summary="Estado de salud de la API",
+    description="Devuelve el estado operativo de la aplicación.",
+    tags=["System"],
+)
+def get_health():
+    return {"status": "ok"}
+
+
+@app.get(
+    "/version",
+    response_model=VersionResponse,
+    summary="Versión de la aplicación",
+    description="Devuelve la versión actual en ejecución.",
+    tags=["System"],
+)
+def get_version():
+    return {"version": "1.0.0"}
+
+
+@app.get(
+    "/ping",
+    response_model=PingResponse,
+    summary="Comprobación de conectividad",
+    description="Endpoint rápido para verificar latencia y conectividad.",
+    tags=["System"],
+)
+def get_ping():
+    return {"message": "pong"}
+    
