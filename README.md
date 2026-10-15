@@ -7,7 +7,7 @@ API inicial para la gestión de tareas desarrollada con FastAPI.
 Se ha optado por una estructura modular organizada en el paquete app/:
 
 - app/main.py: Punto de entrada de la aplicación y configuración del servidor FastAPI.
-(/health, /version, /ping).
+(/health sirve para que te devuelva el estado, /version sirve para que te devuelva la versión, /ping que te devuelva la red).
 
 ## Requisitos e Instalación
 
