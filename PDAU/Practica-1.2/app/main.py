@@ -13,7 +13,7 @@ app = FastAPI(
 )
 
 
-# --- Modelos de Respuesta del Sistema ---
+# --- Modelos de Respuesta del Sistema ---  
 class HealthResponse(BaseModel):
     status: str = Field(..., json_schema_extra={"example": "ok"})
 
