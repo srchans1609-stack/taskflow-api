@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 # Importamos los routers desde la carpeta router (en singular, según tu estructura)
-from app.router import tasks, projects
+from app.router import tasks
+from app.router import projects
 
 app = FastAPI(
     title="API de Gestión de Tareas y Proyectos",
