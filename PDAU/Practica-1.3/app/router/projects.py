@@ -1,15 +1,17 @@
 from fastapi import APIRouter
 
+# Instanciamos el router con su prefijo y etiqueta
 router = APIRouter(
-    prefix="/projects", 
-    tags=["Projects"],
+    prefix="/projects",
+    tags=["projects"]
 )
 
+# Endpoint GET para obtener proyectos
 @router.get("/")
 def get_projects():
-    return {"message": "Obteniendo todos los proyectos"}
-# Cambiamos @app.get("/projects") por @router.get("/")
+    return [{"id": 1, "name": "Proyecto 1"}, {"id": 2, "name": "Proyecto 2"}]
 
-@router.get("/")
-def obtener_proyectos():
-    return [{"id": 1, "name": "Proyecto Modular"}]
+# Endpoint POST para crear un proyecto (opcional, pero útil para la práctica)
+@router.post("/")
+def create_project(project: dict):
+    return {"message": "Proyecto creado exitosamente", "data": project}
