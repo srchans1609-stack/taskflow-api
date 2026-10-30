@@ -23,18 +23,18 @@ class Category(Base):
     tasks = relationship("Task", back_populates="category")
 
 class Project(Base):
-     __tablename__ = "projects"
-
-     id = Column(Integer, primary_key=True, index=True)
-     name = Column(String, index=True)
-     description = Column(String, nullable=True)
-     owner_id = Column(Integer, ForeignKey("users.id"))
-
-     #Relación bidireccional con User
-     owner = relationship("User"; back_populates="project")
-
-     #Relación 1-N: Un proyecto tiene múltiples tareas
-     tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")
+    __tablename__ = "projects"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    description = Column(String, nullable=True)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    
+    # Relación bidireccional con User
+    owner = relationship("User", back_populates="projects")
+    
+    # Relación 1-N: Un proyecto tiene múltiples tareas
+    tasks = relationship("Task", back_populates="project", cascade="all, delete-orphan")
 
 class Task(Base):
     __tablename__ = "tasks"
