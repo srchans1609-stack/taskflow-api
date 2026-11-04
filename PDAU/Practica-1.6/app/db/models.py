@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DataTime
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -20,7 +19,7 @@ class Category(Base):
     name = Column(String, index=True)
 
     #Relación 1-N: Una categoría puede agrupar múltiples tareas
-    tasks = relationship("Task", back_populates="category")
+    tasks = relationship("Task", back_populates="category", cascade="all, delete-orphan")
 
 class Project(Base):
     __tablename__ = "projects"
@@ -41,12 +40,12 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    descripcion = Column(String, nullable=True)
+    description = Column(String, nullable=True)
     completed = Column(Boolean, default=False)
 
     #FK  a Project requisito indispensable de la práctica
-    project_id = Column(Integer, ForeignKey("project.id"))
-    category.id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True)
 
     #Relaciones bidireccionales, ES UN PUENTE QUE CONECTA LOS MODELOS
     project = relationship("Project", back_populates="tasks")
