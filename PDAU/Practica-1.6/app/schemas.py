@@ -104,3 +104,14 @@ class TaskRead(TaskBase):
     created_at: Optional[datetime] = Field(None, description="Fecha y hora de creación")
 
     model_config = ConfigDict(from_attributes=True)
+
+# SCHEMAS DE CATEGORY
+
+class CategoryRead(CategoryBase):
+    """Schema de salida con los datos de la categoría."""
+    id: int = Field(..., gt=0, description="Identificador único de la categoría")
+
+# Devuelve automáticamente la lista de tareas asociadas a la categoría
+    tasks: List[TaskRead] = []
+    
+    model_config = ConfigDict(from_attributes=True)
