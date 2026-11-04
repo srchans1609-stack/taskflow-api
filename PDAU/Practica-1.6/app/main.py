@@ -2,11 +2,18 @@ import time
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.router import tasks, projects
+
+# 1. Importamos la BD y los 3 routers (añadido categories)
+from app.db.database import engine
+from app.db import models
+from app.router import tasks, projects, categories
+
+# Crea las tablas en la BD automáticamente si no existen
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="API de Gestión de Tareas y Proyectos",
-    description="Práctica 1.4 - Middleware, CORS y Manejo de Errores"
+    title="API de Gestión de Tareas, Proyectos y Categorías",
+    description="Práctica 1.6 - CRUD Completo"
 )
 
 # 1. Configuración de CORS 
@@ -52,3 +59,4 @@ def ping():
 # Inclusión de los routers de negocio
 app.include_router(tasks.router)
 app.include_router(projects.router)
+app.include_router(categories.router)
