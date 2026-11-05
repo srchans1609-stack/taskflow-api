@@ -14,8 +14,6 @@ def get_all_projects(db: Session, skip: int = 0, limit: int = 10) -> List[models
    
     return db.query(models.Project).offset(skip).limit(limit).all()
 
-
-
 # Obtener resumen/estadísticas de proyectos (Criterio "Excelente")
 
 def get_projects_summary(db: Session) -> List[dict]:
