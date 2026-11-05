@@ -50,7 +50,7 @@ def health_check():
 
 @app.get("/version", tags=["System"])
 def get_version():
-    return {"version": "1.0.0"}
+    return {"version": "1.6.0"}
 
 @app.get("/ping", tags=["System"])
 def ping():
