@@ -19,7 +19,7 @@ app = FastAPI(
 # 1. Configuración de CORS 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173"],#Patatacocidacon<huevo>
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,3 +60,8 @@ def ping():
 app.include_router(tasks.router)
 app.include_router(projects.router)
 app.include_router(categories.router)
+# COMENTA ESTAS LÍNEAS TEMPORALMENTE:
+# @app.exception_handler(Exception)
+# async def global_exception_handler(request: Request, exc: Exception):
+#     print(f"Error no controlado detectado: {exc}")
+#     return JSONResponse(status_code=500, content={"error": "mensaje"})

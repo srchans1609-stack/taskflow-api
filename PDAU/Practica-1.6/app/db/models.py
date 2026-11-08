@@ -1,6 +1,17 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from .database import Base
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True)
+
+    # Relación 1-N: Un usuario puede crear múltiples proyectos
+    projects = relationship("Project", back_populates="owner", cascade="all, delete-orphan")
 
 class Category(Base):
     __tablename__ = "categories"
@@ -8,8 +19,8 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
 
-    #Relación 1-N: Una categoría puede agrupar múltiples tareas
-    tasks = relationship("Task", back_populates="category", cascade="all, delete-orphan")
+    # Relación 1-N: Una categoría puede agrupar múltiples tareas
+    tasks = relationship("Task", back_populates="category")
 
 class Project(Base):
     __tablename__ = "projects"
@@ -30,13 +41,13 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    description = Column(String, nullable=True)
+    description = Column(String, nullable=True)  # Corregido a 'description'
     completed = Column(Boolean, default=False)
 
-    #FK  a Project requisito indispensable de la práctica
-    project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))
-    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=True)
+    # FK con requisitos obligatorios de la práctica (CASCADE y SET NULL)
+    project_id = Column(Integer, ForeignKey("projects.id", ondelete="CASCADE"))  # Corregido a 'projects.id'
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="SET NULL"), nullable=True) # Corregido 'category_id'
 
-    #Relaciones bidireccionales, ES UN PUENTE QUE CONECTA LOS MODELOS
+    # Relaciones bidireccionales
     project = relationship("Project", back_populates="tasks")
     category = relationship("Category", back_populates="tasks")
