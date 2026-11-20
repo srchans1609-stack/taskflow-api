@@ -1,21 +1,12 @@
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
-from app.db import models
+from app.models import models
 from app import schemas
 
 def get_all_categories(db: Session, skip: int = 0, limit: int = 10) -> List[models.Category]:
-    
-    #Obtiene todas las categorías con paginación.
-    
     return db.query(models.Category).offset(skip).limit(limit).all()
 
-#El Optional indica que la funcion puede devolver un objjeto o no
 def get_category_by_id(db: Session, category_id: int) -> Optional[models.Category]:
-    
-    # Obtiene una categoría por su ID.
-    # Se añade joinedload(models.Category.tasks) para que traiga
-    # las tareas asociadas en la misma consulta (requisito explícito de la práctica).
-    
     return (
         db.query(models.Category)
         .options(joinedload(models.Category.tasks))
@@ -24,10 +15,6 @@ def get_category_by_id(db: Session, category_id: int) -> Optional[models.Categor
     )
 
 def get_categories_summary(db: Session) -> List[dict]:
-    #
-    # options(joinedload(...)): Carga las categorías y sus tareas vinculadas en una sola consulta SQL JOIN.
-    # len(c.tasks): Calcula cuántas tareas tiene asignada cada categoría.
-    
     categories = db.query(models.Category).options(joinedload(models.Category.tasks)).all()
     return [
         {
@@ -39,9 +26,6 @@ def get_categories_summary(db: Session) -> List[dict]:
     ]
 
 def create_category(db: Session, category_in: schemas.CategoryCreate) -> models.Category:
-    
-    # Crea una nueva categoría.
-    
     new_category = models.Category(**category_in.model_dump())
     db.add(new_category)
     db.commit()
@@ -49,11 +33,6 @@ def create_category(db: Session, category_in: schemas.CategoryCreate) -> models.
     return new_category
 
 def update_category(db: Session, category: models.Category, category_in: schemas.CategoryUpdate) -> models.Category:
-    
-    # Actualiza una categoría existente.
-    #eL update_data = category_in.model_dump(exclude_unset=True) permite actualizar solo los campos proporcionados en la solicitud, dejando intactos los demás.
-    #el for key, value in update_data actualiza los atributos del objeto category con los valores proporcionados en update_data.
-    
     update_data = category_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(category, key, value)
@@ -62,8 +41,5 @@ def update_category(db: Session, category: models.Category, category_in: schemas
     return category
 
 def delete_category(db: Session, category: models.Category) -> None:
-    
-    # Elimina una categoría.
-    
     db.delete(category)
     db.commit()
