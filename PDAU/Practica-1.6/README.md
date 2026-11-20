@@ -1,4 +1,4 @@
-# 📋 API de Gestión de Tareas - Práctica 1.6
+# API de Gestión de Tareas - Práctica 1.6
 
 Bienvenido al repositorio de la Práctica 1.6 - "TaskFlow". Esta API RESTful está construida con **FastAPI** y **SQLAlchemy**, y permite gestionar Proyectos, Tareas y Categorías de manera eficiente y escalable.
 

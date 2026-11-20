@@ -5,8 +5,9 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from sqlalchemy.orm import Session
-from database import get_db
-from models.user import User
+
+from app.db.database import get_db
+from app.models.user import User
 
 SECRET_KEY = "cambia_esta_clave_por_una_super_secreta_en_env"
 ALGORITHM = "HS256"

@@ -1,17 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from .database import Base
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-
-    # Relación 1-N: Un usuario puede crear múltiples proyectos
-    projects = relationship("Project", back_populates="owner", cascade="all, delete-orphan")
+from app.db.database import Base
 
 class Category(Base):
     __tablename__ = "categories"                                                                            

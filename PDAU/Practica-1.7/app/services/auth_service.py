@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
 
-from app.db.models import User
-from app.schemas.auth import UserCreate
+from app.models.user import User
+from app.schemas import UserCreate
 from app.core.security import (
     get_password_hash,
     verify_password,

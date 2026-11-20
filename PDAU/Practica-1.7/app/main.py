@@ -3,28 +3,22 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-# 1. Importamos la BD y los 3 routers (añadido categories)
-from app.db.database import engine
-from app.db import models
-from app.routers import auth, tasks, projects, categories
-
-app.include_router(auth.router)
-app.include_router(tasks.router)
-app.include_router(projects.router)
-app.include_router(categories.router)
+from app.db.database import engine, Base
+from app.models import models, user
+from app.router import auth, tasks, projects, categories
 
 # Crea las tablas en la BD automáticamente si no existen
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="API de Gestión de Tareas, Proyectos y Categorías",
-    description="Práctica 1.6 - CRUD Completo"
+    description="Práctica 1.7 - Autenticación JWT"
 )
 
 # 1. Configuración de CORS 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],#Patatacocidacon<huevo>
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,7 +30,6 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.perf_counter()
     response = await call_next(request)
     process_time = time.perf_counter() - start_time
-    # Se convierte a milisegundos y se asigna a la cabecera
     response.headers["X-Process-Time"] = str(process_time * 1000)
     return response
 
@@ -45,7 +38,7 @@ async def add_process_time_header(request: Request, call_next):
 async def global_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=500,
-        content={"error": "mensaje"}
+        content={"error": "Error interno del servidor"}
     )
 
 # Endpoints de sistema
@@ -55,14 +48,14 @@ def health_check():
 
 @app.get("/version", tags=["System"])
 def get_version():
-    return {"version": "1.6.0"}
+    return {"version": "1.7.0"}
 
 @app.get("/ping", tags=["System"])
 def ping():
     return {"ping": "pong"}
 
-# Inclusión de los routers de negocio
+# Inclusión de los routers de negocio y autenticación
+app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(projects.router)
 app.include_router(categories.router)
-app.include_router(auth.router)
