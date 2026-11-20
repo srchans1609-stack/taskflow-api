@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional, List 
 from pydantic import BaseModel, Field, ConfigDict
 
+
 # 1. SCHEMAS DE TASK (Deben ir primero para que Project y Category puedan usarlos)
 class TaskBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=100, description="Título de la tarea")
@@ -48,6 +49,8 @@ class ProjectRead(ProjectCreate):
 
 
 # 3. SCHEMAS DE CATEGORY
+#model_config deja a pydantic leer antes de que pase por el ORM los datos
+
 class CategoryBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
@@ -62,3 +65,28 @@ class CategoryRead(CategoryBase):
     tasks: List[TaskRead] = [] 
     
     model_config = ConfigDict(from_attributes=True)
+
+# 4. SCHEMAS DE USER Y AUTENTICACIÓN
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+    role: Optional[str] = "user"
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    role: str
+
+    class Config:
+        from_attributes = True
+
+# 5. SCHEMAS DE AUTENTICACIÓN
+
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str

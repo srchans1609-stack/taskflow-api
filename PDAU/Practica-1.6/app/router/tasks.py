@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Security
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from app.db.database import get_db
+from app.db.models import User
 from app import schemas
 from app.services import tasks_services
+from app.core.security import get_current_user
 
 router = APIRouter(
     prefix="/tasks",
@@ -38,14 +40,23 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
         )
     return task
 
-# 3. POST /tasks -> Crear tarea
+# 3. POST /tasks -> Crear tarea (PROTEGIDO)
 @router.post("/", response_model=schemas.TaskRead, status_code=status.HTTP_201_CREATED)
-def create_task(task_in: schemas.TaskCreate, db: Session = Depends(get_db)):
+def create_task(
+    task_in: schemas.TaskCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["tasks:write"])
+):
     return tasks_services.create_task(db, task_in)
 
-# 4. PUT /tasks/{task_id} -> Editar tarea
+# 4. PUT /tasks/{task_id} -> Editar tarea (PROTEGIDO)
 @router.put("/{task_id}", response_model=schemas.TaskRead)
-def update_task(task_id: int, task_in: schemas.TaskUpdate, db: Session = Depends(get_db)):
+def update_task(
+    task_id: int, 
+    task_in: schemas.TaskUpdate, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["tasks:write"])
+):
     task = tasks_services.get_task_by_id(db, task_id)
     if not task:
         raise HTTPException(
@@ -54,9 +65,13 @@ def update_task(task_id: int, task_in: schemas.TaskUpdate, db: Session = Depends
         )
     return tasks_services.update_task(db, task, task_in)
 
-# 5. DELETE /tasks/{task_id} -> Eliminar tarea
+# 5. DELETE /tasks/{task_id} -> Eliminar tarea (PROTEGIDO)
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id: int, db: Session = Depends(get_db)):
+def delete_task(
+    task_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["tasks:write"])
+):
     task = tasks_services.get_task_by_id(db, task_id)
     if not task:
         raise HTTPException(

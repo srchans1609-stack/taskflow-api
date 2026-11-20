@@ -6,7 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 # 1. Importamos la BD y los 3 routers (añadido categories)
 from app.db.database import engine
 from app.db import models
-from app.router import tasks, projects, categories
+from app.routers import auth, tasks, projects, categories
+
+app.include_router(auth.router)
+app.include_router(tasks.router)
+app.include_router(projects.router)
+app.include_router(categories.router)
 
 # Crea las tablas en la BD automáticamente si no existen
 models.Base.metadata.create_all(bind=engine)
@@ -60,8 +65,4 @@ def ping():
 app.include_router(tasks.router)
 app.include_router(projects.router)
 app.include_router(categories.router)
-# COMENTA ESTAS LÍNEAS TEMPORALMENTE:
-# @app.exception_handler(Exception)
-# async def global_exception_handler(request: Request, exc: Exception):
-#     print(f"Error no controlado detectado: {exc}")
-#     return JSONResponse(status_code=500, content={"error": "mensaje"})
+app.include_router(auth.router)

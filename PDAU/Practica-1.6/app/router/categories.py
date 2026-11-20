@@ -13,6 +13,10 @@ router = APIRouter(
 
 
 # GET /categories/ -> Listar categorías paginadas
+#El router.get registra una ruta HTTP get
+#def es la funcion que maneja la ruta, recibe parametros query y devuelve una respuesta
+#El skip y limit son parametros query que se pasan a la funcion get_all_categories del servicio
+#El return devuelve la lista de categorias obtenidas del servicio
 
 @router.get("/", response_model=List[schemas.CategoryRead])
 def list_categories(
@@ -26,6 +30,7 @@ def list_categories(
 
 # GET /categories/summary 
 
+
 @router.get("/summary")
 def get_categories_summary(db: Session = Depends(get_db)):
     return categories_services.get_categories_summary(db)
@@ -33,6 +38,7 @@ def get_categories_summary(db: Session = Depends(get_db)):
 
 
 # Detalle de categoría con sus tareas
+#El cateagory_id es un parametro de ruta que se pasa a la funcion get_category_by_id del servicio
 
 @router.get("/{category_id}", response_model=schemas.CategoryRead)
 def get_category(category_id: int, db: Session = Depends(get_db)):
@@ -51,7 +57,7 @@ def create_category(category_in: schemas.CategoryCreate, db: Session = Depends(g
     return categories_services.create_category(db, category_in)
 
 
-
+                                                                           
 # Editar categoría
 @router.put("/{category_id}", response_model=schemas.CategoryRead)
 def update_category(

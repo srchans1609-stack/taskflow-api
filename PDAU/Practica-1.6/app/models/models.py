@@ -14,7 +14,7 @@ class User(Base):
     projects = relationship("Project", back_populates="owner", cascade="all, delete-orphan")
 
 class Category(Base):
-    __tablename__ = "categories"
+    __tablename__ = "categories"                                                                            
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)

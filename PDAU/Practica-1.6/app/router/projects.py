@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Security
 from sqlalchemy.orm import Session
 from typing import List  
 
 from app.db.database import get_db
+from app.db.models import User
 from app import schemas
 from app.services import project_services
+from app.core.security import get_current_user
 
 router = APIRouter(
     prefix="/projects",
@@ -20,17 +22,12 @@ def list_projects(
 ):
     return project_services.get_all_projects(db, skip=skip, limit=limit)
 
-
 # GET /projects/summary
-
 @router.get("/summary")
 def get_projects_summary(db: Session = Depends(get_db)):
     return project_services.get_projects_summary(db)
 
-
-
 # GET /projects/{project_id} -> Detalle del proyecto
-
 @router.get("/{project_id}", response_model=schemas.ProjectRead)
 def get_project(project_id: int, db: Session = Depends(get_db)):    
     project = project_services.get_project_by_id(db, project_id)
@@ -41,18 +38,23 @@ def get_project(project_id: int, db: Session = Depends(get_db)):
         )
     return project
 
-
-
-# Crear proyecto
+# Crear proyecto (PROTEGIDO - requiere rol admin / scope projects:write)
 @router.post("/", response_model=schemas.ProjectRead, status_code=status.HTTP_201_CREATED)
-def create_project(project_in: schemas.ProjectCreate, db: Session = Depends(get_db)):
+def create_project(
+    project_in: schemas.ProjectCreate, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["projects:write"])
+):
     return project_services.create_project(db, project_in)
 
-
- #Actualizar proyecto
-
+# Actualizar proyecto (PROTEGIDO - requiere rol admin / scope projects:write)
 @router.put("/{project_id}", response_model=schemas.ProjectRead)
-def update_project(project_id: int, project_in: schemas.ProjectUpdate, db: Session = Depends(get_db)):
+def update_project(
+    project_id: int, 
+    project_in: schemas.ProjectUpdate, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["projects:write"])
+):
     project = project_services.get_project_by_id(db, project_id)
     if not project:
         raise HTTPException(
@@ -61,12 +63,13 @@ def update_project(project_id: int, project_in: schemas.ProjectUpdate, db: Sessi
         )
     return project_services.update_project(db, project, project_in)
 
-
-
-#  Eliminar proyecto
-
+# Eliminar proyecto (PROTEGIDO - requiere rol admin / scope projects:write)
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_project(project_id: int, db: Session = Depends(get_db)): 
+def delete_project(
+    project_id: int, 
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user, scopes=["projects:write"])
+): 
     project = project_services.get_project_by_id(db, project_id)
     if not project:
         raise HTTPException(

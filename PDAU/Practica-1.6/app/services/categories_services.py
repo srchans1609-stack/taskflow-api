@@ -9,6 +9,7 @@ def get_all_categories(db: Session, skip: int = 0, limit: int = 10) -> List[mode
     
     return db.query(models.Category).offset(skip).limit(limit).all()
 
+#El Optional indica que la funcion puede devolver un objjeto o no
 def get_category_by_id(db: Session, category_id: int) -> Optional[models.Category]:
     
     # Obtiene una categoría por su ID.
@@ -50,6 +51,8 @@ def create_category(db: Session, category_in: schemas.CategoryCreate) -> models.
 def update_category(db: Session, category: models.Category, category_in: schemas.CategoryUpdate) -> models.Category:
     
     # Actualiza una categoría existente.
+    #eL update_data = category_in.model_dump(exclude_unset=True) permite actualizar solo los campos proporcionados en la solicitud, dejando intactos los demás.
+    #el for key, value in update_data actualiza los atributos del objeto category con los valores proporcionados en update_data.
     
     update_data = category_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
